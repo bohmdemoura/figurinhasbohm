@@ -1,0 +1,10 @@
+{
+  "name": "figurinhas-bohm",
+  "version": "1.0.0",
+  "description": "Álbum de figurinhas Bohm",
+  "scripts": {
+    "deploy": "node bump-version.js && firebase deploy",
+    "deploy:hosting": "node bump-version.js && firebase deploy --only hosting"
+  },
+  "private": true
+}
