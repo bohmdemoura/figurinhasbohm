@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Figurinhas Bohm</title>
+    <link rel="icon" type="image/png" href="Sem nome (480 x 322 px).png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#8A1538">
+    <style>
+        /* Configurações Gerais */
+body {
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    background: radial-gradient(circle at top, #4a0e1c 0%, #1a1a1a 100%);
+    color: #ffffff;
+    margin: 0;
+    padding: 10px;
+    min-height: 100vh;
+}
+
+/* Header Fixo */
+#header-app {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(15px);
+    display: flex;
+    align-items: stretch;
+    padding: 10px 15px;
+    z-index: 1000;
+    gap: 10px;
+    height: 60px;
+    box-sizing: border-box;
+}
+
+#btnOpenSidebar {
+    flex-shrink: 0;
+    width: 120px;
+    background: #333;
+    align-self: stretch;
+}
+
+#header-app input {
+    flex-grow: 1;
+    margin: 0;
+    display: block;
+    align-self: stretch;
+    height: auto;
+}
+
+/* Espaçamento para o conteúdo não ficar atrás do header */
+.spacer { height: 75px; }
+
+/* Grid de Figurinhas - Ajustado para ser responsivo */
+.grid-figurinhas {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+    gap: 10px;
+    padding: 10px;
+}
+
+/* Estilo das Figurinhas (Cromos) */
+.cromo {
+    aspect-ratio: 1/1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    border-radius: 8px;
+    font-size: 14px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+
+.faltante { background: #333; color: #666; border: 1px solid #444; }
+.unica { background: linear-gradient(135deg, #00ff08, #008004); color: white; }
+.repetida { background: linear-gradient(135deg, #ffbf00, #ff8000); color: #000; }
+
+/* Containers de Grupos (Seleções) */
+.grupo-container {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    margin-bottom: 15px;
+    overflow: hidden;
+}
+
+.grupo-header {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 12px 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.grupo-header h2 { margin: 0; font-size: 18px; color: #ffbf00; }
+
+/* Estilo global de botões */
+button {
+    border: none;
+    padding: 11px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    color: white;
+    transition: opacity 0.2s, transform 0.1s;
+}
+button:active {
+    opacity: 0.8;
+    transform: scale(0.97);
+}
+
+.filter-btn {
+    font-size: 12px;
+    padding: 10px 6px;
+}
+
+input[type="text"], input[type="email"], input[type="password"] {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 12px;
+    border: none;
+    margin: 5px 0;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+/* Sidebar */
+#sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    width: 0;
+    height: 100%;
+    background: #1a1a1a;
+    overflow-x: hidden;
+    transition: width 0.3s ease;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Barra de progresso */
+#progressoContainer {
+    padding: 10px 20px;
+}
+.progresso-titulo {
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 6px;
+    color: #fff;
+}
+#progressWrapper {
+    background: #333;
+    border-radius: 10px;
+    height: 24px;
+    overflow: hidden;
+    width: 75%;
+    margin: 0 auto;
+}
+#progressBar {
+    height: 100%;
+    background: linear-gradient(90deg, #00ff08, #008004);
+    border-radius: 10px;
+    transition: width 0.5s ease;
+    width: 0%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    min-width: 36px;
+}
+
+/* Área de input */
+.input-area {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 20px;
+}
+.input-area input {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+}
+.botoes-add {
+    display: flex;
+    gap: 8px;
+}
+.botoes-add button {
+    flex: 1;
+}
+#ultimaFigurinha {
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    min-height: 36px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: none;
+}
+#ultimaFigurinha.visivel {
+    display: block;
+}
+
+/* Botões de login centralizados */
+.botoes-login {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+    width: 100%;
+}
+.botoes-login button {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Conteúdo oculto nos grupos */
+.grupo-content.oculto { display: none; }
+.hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div id="sidebar">
+        <a href="javascript:void(0)" id="btnClose" style="position: absolute; top: 20px; right: 25px; font-size: 30px; color: white; text-decoration: none;">&times;</a>
+        <div style="padding: 20px; flex: 1 0 auto; min-width: 250px; box-sizing: border-box;">
+            <div id="userNameDisplay" style="color: white; text-align: center; margin-bottom: 20px;"></div>
+            <!-- Trocas de Figurinhas -->
+            <div style="margin-top: 0;">
+                <button onclick="window.location.href='trocas.html'" style="width: 100%; background: #cc8800; color: #ffffff; font-size: 13px;">🔄 Trocas de Figurinhas</button>
+            </div>
+
+            <!-- Alterar Senha (colapsável) -->
+            <div style="margin-top: 8px;">
+                <button id="btnToggleSenha" style="width: 100%; background: #333; color: #ffffff; font-size: 13px;">🔒 Alterar Senha</button>
+                <div id="senhaSection" style="display: none; margin-top: 8px;">
+                    <input type="password" id="novaSenhaInput" placeholder="Nova senha" style="width: 100%; box-sizing: border-box; margin: 6px 0;">
+                    <button id="btnAtualizarSenha" style="width: 100%; background: #00aa05;">Confirmar Nova Senha</button>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="mailto:bohmdemoura@gmail.com" style="color: #aaa; font-size: 12px; text-decoration: none;">✉️ Suporte: bohmdemoura@gmail.com</a>
+            </div>
+        </div>
+        <div style="padding: 20px; width: 100%; min-width: 250px; box-sizing: border-box; margin-top: auto;">
+            <button id="btnSair" style="width: 100%; background: #ff0000;">Sair</button>
+        </div>
+    </div>
+
+   <div id="header-app" >
+    <button id="btnOpenSidebar">Perfil</button>
+    <input type="text" id="headerSearch" placeholder="Pesquisar seleção...">
+</div>
+
+<div class="spacer"></div>
+    
+    <!-- ÁREA DO ÁLBUM -->
+    <div id="appArea">
+        <div style="text-align: center; padding: 10px 0 0;">
+            <img src="Sem nome (480 x 322 px).png" style="width: 140px;">
+        </div>
+        <div id="progressoContainer" style="display: none; text-align: center;">
+            <div class="progresso-titulo">Progresso do Álbum</div>
+            <div id="progressWrapper"><div id="progressBar">0%</div></div>
+        </div>
+        <div class="input-area">
+            <input type="text" id="stickerInput" placeholder="Ex: BRA 10">
+            <div id="ultimaFigurinha"></div>
+            <div class="botoes-add">
+                <button id="btnAdicionar" style="background: #00aa05;">Adicionar</button>
+                <button id="btnRemover" style="background: #ff0000;">Remover</button>
+            </div>
+        </div>
+        
+        <div id="filtros" style="display: flex; gap: 5px; margin-bottom: 20px; padding: 0 10px;">
+            <button class="filter-btn" data-filter="all" style="flex:1; background: #555;">Todas</button>
+            <button class="filter-btn" data-filter="missing" style="flex:1; background: #ff0000;">Faltam</button>
+            <button class="filter-btn" data-filter="unique" style="flex:1; background: #00aa05;">Únicas</button>
+            <button class="filter-btn" data-filter="repeated" style="flex:1; background: #cc8800; color: #000;">Repetidas</button>
+        </div>
+        <div id="album"></div>
+
+        <!-- Contador de gastos -->
+        <div id="contadorGastos" style="margin: 24px 10px 30px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 20px; text-align: center;">
+            <div style="font-size: 13px; color: #aaa; margin-bottom: 6px;">💸 Total gasto com figurinhas</div>
+            <div id="valorGasto" style="font-size: 36px; font-weight: bold; color: #00ff08;">R$ 0,00</div>
+            <div id="detalheGasto" style="font-size: 12px; color: #666; margin-top: 6px;"></div>
+        </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+    <script src="social.js" type="module"></script>
+
+<!-- VERSION_FOOTER_START -->
+<div style="text-align:center; padding:14px 0 4px; font-size:11px; color:#444; letter-spacing:0.04em; user-select:none;">
+    Figurinhas Bohm &nbsp;•&nbsp; v1.0.2 &nbsp;•&nbsp; 02/05/2026, 19:52
+</div>
+<!-- VERSION_FOOTER_END -->
+</body>
+</html>

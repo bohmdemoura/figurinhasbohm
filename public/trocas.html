@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trocas - Figurinhas Bohm</title>
+    <link rel="icon" type="image/png" href="Sem nome (480 x 322 px).png">
+    <meta name="theme-color" content="#8A1538">
+    <style>
+body {
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    background: radial-gradient(circle at top, #4a0e1c 0%, #1a1a1a 100%);
+    color: #ffffff;
+    margin: 0;
+    padding: 10px;
+    min-height: 100vh;
+}
+
+#header-app {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(15px);
+    display: flex;
+    align-items: stretch;
+    padding: 10px 15px;
+    z-index: 1000;
+    gap: 10px;
+    height: 60px;
+    box-sizing: border-box;
+}
+
+#btnVoltar {
+    flex-shrink: 0;
+    width: 80px;
+    background: #333;
+    align-self: stretch;
+}
+
+#header-app input {
+    flex-grow: 1;
+    margin: 0;
+    display: block;
+    align-self: stretch;
+    height: auto;
+}
+
+.spacer { height: 75px; }
+
+.grid-figurinhas {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+    gap: 10px;
+    padding: 10px;
+}
+
+.cromo {
+    aspect-ratio: 1/1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    border-radius: 8px;
+    font-size: 14px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    cursor: default;
+}
+
+.repetida { background: linear-gradient(135deg, #ffbf00, #ff8000); color: #000; }
+
+.grupo-container {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    margin-bottom: 15px;
+    overflow: hidden;
+}
+
+.grupo-header {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 12px 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.grupo-header h2 { margin: 0; font-size: 18px; color: #ffbf00; }
+
+button {
+    border: none;
+    padding: 11px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    color: white;
+    transition: opacity 0.2s, transform 0.1s;
+}
+button:active { opacity: 0.8; transform: scale(0.97); }
+
+input[type="text"] {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 12px;
+    border: none;
+    margin: 5px 0;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 14px;
+    color: #000;
+}
+
+.grupo-content.oculto { display: none; }
+
+/* Input area busca */
+.input-area {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 20px;
+}
+
+/* Abas de modo */
+#abas {
+    display: flex;
+    gap: 8px;
+    padding: 0 10px 10px;
+}
+#abas button {
+    flex: 1;
+    font-size: 13px;
+    padding: 10px 6px;
+}
+.aba-ativa { outline: 2px solid #fff; }
+
+/* Info resultado busca */
+#infoUsuario {
+    text-align: center;
+    padding: 8px 20px;
+    font-size: 13px;
+    color: #aaa;
+    min-height: 20px;
+}
+
+/* Tela de login/redirect */
+#loginRedirect {
+    text-align: center;
+    padding: 40px 20px;
+    max-width: 360px;
+    margin: 0 auto;
+}
+
+/* Contador de repetidas */
+#contadorRepetidas {
+    text-align: center;
+    font-size: 13px;
+    color: #ffbf00;
+    padding: 4px 20px 8px;
+    font-weight: bold;
+}
+    </style>
+</head>
+<body>
+
+<div id="header-app">
+    <button id="btnVoltar">Voltar</button>
+    <input type="text" id="headerSearch" placeholder="Pesquisar seleção...">
+</div>
+
+<div class="spacer"></div>
+
+<!-- Tela de login redirect -->
+<div id="loginRedirect" style="display:none;">
+    <img src="Sem nome (480 x 322 px).png" style="width: 120px; margin-bottom: 20px;">
+    <p style="color:#aaa;">Você precisa estar logado para ver as trocas.</p>
+    <button onclick="window.location.href='index.html'" style="background:#00aa05; width:100%;">Ir para o Login</button>
+</div>
+
+<!-- Conteúdo principal -->
+<div id="appArea" style="display:none;">
+    <div style="text-align: center; padding: 10px 0 0;">
+        <img src="Sem nome (480 x 322 px).png" style="width: 120px;">
+        <h2 style="margin: 6px 0 2px; font-size: 20px;">🔄 Trocas</h2>
+    </div>
+
+    <!-- Abas: Minhas Repetidas / Buscar Usuário -->
+    <div id="abas">
+        <button id="abaMinhas" class="aba-ativa" style="background: #cc8800; color: #000;">Minhas Repetidas</button>
+        <button id="abaBuscar" style="background: #333;">Buscar Usuário</button>
+    </div>
+
+    <!-- Painel: Minhas Repetidas -->
+    <div id="painelMinhas">
+        <div id="contadorRepetidas"></div>
+        <div id="albumRepetidas"></div>
+        <p id="semRepetidas" style="text-align:center; color:#aaa; display:none; padding: 20px;">Você ainda não tem figurinhas repetidas.</p>
+    </div>
+
+    <!-- Painel: Buscar Usuário -->
+    <div id="painelBuscar" style="display:none;">
+        <div class="input-area">
+            <input type="text" id="searchUsername" placeholder="Digite o username do usuário...">
+            <button id="btnBuscar" style="background: #00aa05; width:100%;">🔍 Buscar Repetidas</button>
+        </div>
+        <div id="infoUsuario"></div>
+        <div id="albumBusca"></div>
+    </div>
+</div>
+
+<script type="module">
+import { db, auth } from "./firebase-config.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+const copaData = {
+    FWC: { nome: 'Especiais (FIFA)', total: 29, grupo: 'Especiais' },
+    C:   { nome: 'Coca-Cola', total: 8, grupo: 'Especiais' },
+    MEX: { nome: 'México', total: 20, grupo: 'Grupo A' },
+    RSA: { nome: 'África do Sul', total: 20, grupo: 'Grupo A' },
+    KOR: { nome: 'Coreia do Sul', total: 20, grupo: 'Grupo A' },
+    CZE: { nome: 'República Tcheca', total: 20, grupo: 'Grupo A' },
+    CAN: { nome: 'Canadá', total: 20, grupo: 'Grupo B' },
+    BIH: { nome: 'Bósnia e Herzegovina', total: 20, grupo: 'Grupo B' },
+    QAT: { nome: 'Catar', total: 20, grupo: 'Grupo B' },
+    SUI: { nome: 'Suíça', total: 20, grupo: 'Grupo B' },
+    BRA: { nome: 'Brasil', total: 20, grupo: 'Grupo C' },
+    MAR: { nome: 'Marrocos', total: 20, grupo: 'Grupo C' },
+    HAI: { nome: 'Haiti', total: 20, grupo: 'Grupo C' },
+    SCO: { nome: 'Escócia', total: 20, grupo: 'Grupo C' },
+    USA: { nome: 'Estados Unidos', total: 20, grupo: 'Grupo D' },
+    PAR: { nome: 'Paraguai', total: 20, grupo: 'Grupo D' },
+    AUS: { nome: 'Austrália', total: 20, grupo: 'Grupo D' },
+    TUR: { nome: 'Turquia', total: 20, grupo: 'Grupo D' },
+    GER: { nome: 'Alemanha', total: 20, grupo: 'Grupo E' },
+    CUW: { nome: 'Curaçao', total: 20, grupo: 'Grupo E' },
+    CIV: { nome: 'Costa do Marfim', total: 20, grupo: 'Grupo E' },
+    ECU: { nome: 'Equador', total: 20, grupo: 'Grupo E' },
+    NED: { nome: 'Holanda', total: 20, grupo: 'Grupo F' },
+    JPN: { nome: 'Japão', total: 20, grupo: 'Grupo F' },
+    SWE: { nome: 'Suécia', total: 20, grupo: 'Grupo F' },
+    TUN: { nome: 'Tunísia', total: 20, grupo: 'Grupo F' },
+    BEL: { nome: 'Bélgica', total: 20, grupo: 'Grupo G' },
+    EGY: { nome: 'Egito', total: 20, grupo: 'Grupo G' },
+    IRN: { nome: 'Irã', total: 20, grupo: 'Grupo G' },
+    NZL: { nome: 'Nova Zelândia', total: 20, grupo: 'Grupo G' },
+    ESP: { nome: 'Espanha', total: 20, grupo: 'Grupo H' },
+    CPV: { nome: 'Cabo Verde', total: 20, grupo: 'Grupo H' },
+    KSA: { nome: 'Arábia Saudita', total: 20, grupo: 'Grupo H' },
+    URU: { nome: 'Uruguai', total: 20, grupo: 'Grupo H' },
+    FRA: { nome: 'França', total: 20, grupo: 'Grupo I' },
+    SEN: { nome: 'Senegal', total: 20, grupo: 'Grupo I' },
+    IRQ: { nome: 'Iraque', total: 20, grupo: 'Grupo I' },
+    NOR: { nome: 'Noruega', total: 20, grupo: 'Grupo I' },
+    ARG: { nome: 'Argentina', total: 20, grupo: 'Grupo J' },
+    ALG: { nome: 'Argélia', total: 20, grupo: 'Grupo J' },
+    AUT: { nome: 'Áustria', total: 20, grupo: 'Grupo J' },
+    JOR: { nome: 'Jordânia', total: 20, grupo: 'Grupo J' },
+    POR: { nome: 'Portugal', total: 20, grupo: 'Grupo K' },
+    COD: { nome: 'RD Congo', total: 20, grupo: 'Grupo K' },
+    UZB: { nome: 'Uzbequistão', total: 20, grupo: 'Grupo K' },
+    COL: { nome: 'Colômbia', total: 20, grupo: 'Grupo K' },
+    ENG: { nome: 'Inglaterra', total: 20, grupo: 'Grupo L' },
+    CRO: { nome: 'Croácia', total: 20, grupo: 'Grupo L' },
+    GHA: { nome: 'Gana', total: 20, grupo: 'Grupo L' },
+    PAN: { nome: 'Panamá', total: 20, grupo: 'Grupo L' }
+};
+
+let buscaSelecao = '';
+
+// Monta grid agrupado a partir de um mapa { "BRA 10": qtd, ... } ou array ["BRA 10", ...]
+function montarGrid(containerEl, figurinhas, corClasse = 'repetida') {
+    containerEl.innerHTML = '';
+
+    // Normaliza para mapa { "BRA 10": qtd }
+    const mapa = {};
+    if (Array.isArray(figurinhas)) {
+        figurinhas.forEach(f => { mapa[f] = (mapa[f] || 0) + 1; });
+    } else {
+        // colecao completa: filtra só repetidas
+        for (const time in figurinhas) {
+            for (const num in figurinhas[time]) {
+                const qtd = figurinhas[time][num];
+                if (qtd > 1) mapa[`${time} ${num}`] = qtd - 1;
+            }
+        }
+    }
+
+    // Agrupa por time
+    const porTime = {};
+    for (const chave in mapa) {
+        const [time] = chave.split(' ');
+        if (!porTime[time]) porTime[time] = {};
+        porTime[time][chave] = mapa[chave];
+    }
+
+    // Agrupa times em grupos
+    const grupos = {};
+    for (const time in porTime) {
+        if (!copaData[time]) continue;
+        const grupo = copaData[time].grupo;
+        if (!grupos[grupo]) grupos[grupo] = [];
+        grupos[grupo].push(time);
+    }
+
+    let totalRepetidas = 0;
+
+    for (const nomeGrupo in grupos) {
+        let htmlTimes = '';
+        let temBusca = false;
+
+        grupos[nomeGrupo].forEach(time => {
+            if (!copaData[time]) return;
+            const nomeTime = copaData[time].nome.toLowerCase();
+            const siglaTime = time.toLowerCase();
+            const atendeBusca = buscaSelecao === '' || nomeTime.includes(buscaSelecao) || siglaTime.includes(buscaSelecao);
+            if (!atendeBusca) return;
+
+            temBusca = true;
+            let htmlGrid = `<div class="time-section"><h3 style="padding: 10px 10px 0; color: #eee;">${copaData[time].nome} (${time})</h3><div class="grid-figurinhas">`;
+
+            for (const chave in porTime[time]) {
+                const num = chave.split(' ')[1];
+                const qtd = porTime[time][chave];
+                totalRepetidas += qtd;
+                const badge = qtd > 1 ? `<span style="font-size:9px; display:block;">x${qtd}</span>` : '';
+                htmlGrid += `<div class="cromo ${corClasse}">${num}${badge}</div>`;
+            }
+
+            htmlGrid += `</div></div>`;
+            htmlTimes += htmlGrid;
+        });
+
+        if (temBusca && htmlTimes) {
+            const grupoDiv = document.createElement('div');
+            grupoDiv.className = 'grupo-container';
+            grupoDiv.innerHTML = `<div class="grupo-header"><h2>${nomeGrupo}</h2></div><div class="grupo-content">${htmlTimes}</div>`;
+            grupoDiv.querySelector('.grupo-header').addEventListener('click', () => {
+                grupoDiv.querySelector('.grupo-content').classList.toggle('oculto');
+            });
+            containerEl.appendChild(grupoDiv);
+        }
+    }
+
+    return totalRepetidas;
+}
+
+// Aba toggle
+document.getElementById('abaMinhas').addEventListener('click', () => {
+    document.getElementById('painelMinhas').style.display = 'block';
+    document.getElementById('painelBuscar').style.display = 'none';
+    document.getElementById('abaMinhas').classList.add('aba-ativa');
+    document.getElementById('abaBuscar').classList.remove('aba-ativa');
+});
+
+document.getElementById('abaBuscar').addEventListener('click', () => {
+    document.getElementById('painelMinhas').style.display = 'none';
+    document.getElementById('painelBuscar').style.display = 'block';
+    document.getElementById('abaBuscar').classList.add('aba-ativa');
+    document.getElementById('abaMinhas').classList.remove('aba-ativa');
+});
+
+// Busca de figurinhas
+document.getElementById('headerSearch').addEventListener('input', (e) => {
+    buscaSelecao = e.target.value.trim().toLowerCase();
+    // Re-renderiza o painel ativo
+    const painelMinhasVisivel = document.getElementById('painelMinhas').style.display !== 'none';
+    if (painelMinhasVisivel && window._colecaoAtual) {
+        renderMinhas(window._colecaoAtual);
+    }
+});
+
+// Buscar usuário
+document.getElementById('btnBuscar').addEventListener('click', async () => {
+    const termo = document.getElementById('searchUsername').value.trim();
+    const infoEl = document.getElementById('infoUsuario');
+    const albumEl = document.getElementById('albumBusca');
+
+    if (!termo) { alert("Digite um username."); return; }
+
+    infoEl.innerText = 'Buscando...';
+    albumEl.innerHTML = '';
+
+    try {
+        const q = query(collection(db, "public_trades"), where("username", "==", termo));
+        const snap = await getDocs(q);
+
+        if (snap.empty) {
+            infoEl.innerText = '❌ Nenhum usuário encontrado com esse nome.';
+            return;
+        }
+
+        snap.forEach(docSnap => {
+            const data = docSnap.data();
+            if (!data.duplicates || data.duplicates.length === 0) {
+                infoEl.innerText = `✅ ${termo} encontrado — sem repetidas no momento.`;
+                return;
+            }
+            const total = montarGrid(albumEl, data.duplicates);
+            infoEl.innerText = `✅ ${termo} — ${total} figurinha(s) repetida(s) disponível(is)`;
+        });
+    } catch (e) {
+        console.error(e);
+        infoEl.innerText = '❌ Erro na busca. Verifique o console.';
+    }
+});
+
+// Enter no campo de busca de usuário
+document.getElementById('searchUsername').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') document.getElementById('btnBuscar').click();
+});
+
+function renderMinhas(colecao) {
+    window._colecaoAtual = colecao;
+    const albumEl = document.getElementById('albumRepetidas');
+    const semEl = document.getElementById('semRepetidas');
+    const contEl = document.getElementById('contadorRepetidas');
+
+    const total = montarGrid(albumEl, colecao);
+
+    if (albumEl.innerHTML === '') {
+        semEl.style.display = 'block';
+        contEl.innerText = '';
+    } else {
+        semEl.style.display = 'none';
+        contEl.innerText = `🔄 ${total} figurinha(s) repetida(s) para trocar`;
+    }
+}
+
+// Voltar
+document.getElementById('btnVoltar').addEventListener('click', () => {
+    window.location.href = 'index.html';
+});
+
+// Auth
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        document.getElementById('loginRedirect').style.display = 'block';
+        document.getElementById('appArea').style.display = 'none';
+        return;
+    }
+
+    document.getElementById('loginRedirect').style.display = 'none';
+    document.getElementById('appArea').style.display = 'block';
+
+    try {
+        const docSnap = await getDoc(doc(db, "albuns", user.uid));
+        if (docSnap.exists()) {
+            renderMinhas(docSnap.data());
+        } else {
+            document.getElementById('semRepetidas').style.display = 'block';
+        }
+    } catch (e) {
+        console.error("Erro ao carregar álbum:", e);
+    }
+});
+</script>
+
+<!-- VERSION_FOOTER_START -->
+<div style="text-align:center; padding:14px 0 4px; font-size:11px; color:#444; letter-spacing:0.04em; user-select:none;">
+    Figurinhas Bohm &nbsp;•&nbsp; v1.0.2 &nbsp;•&nbsp; 02/05/2026, 19:52
+</div>
+<!-- VERSION_FOOTER_END -->
+</body>
+</html>

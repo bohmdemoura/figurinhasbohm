@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Figurinhas Bohm</title>
+    <link rel="icon" type="image/png" href="Sem nome (480 x 322 px).png">
+    <meta name="theme-color" content="#8A1538">
+    <style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    background: radial-gradient(circle at top, #4a0e1c 0%, #1a1a1a 100%);
+    color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 36px 28px 28px;
+    width: 100%;
+    max-width: 360px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+}
+
+.card img {
+    width: 130px;
+    margin-bottom: 20px;
+}
+
+.card h2 {
+    font-size: 22px;
+    margin-bottom: 20px;
+    font-weight: 700;
+    color: #fff;
+}
+
+input {
+    background: rgba(255,255,255,0.92);
+    border-radius: 10px;
+    padding: 13px 14px;
+    border: none;
+    display: block;
+    width: 100%;
+    font-size: 14px;
+    color: #111;
+    margin-bottom: 10px;
+    outline: none;
+    transition: box-shadow 0.2s;
+}
+input:focus {
+    box-shadow: 0 0 0 2px #00ff08;
+}
+
+button {
+    border: none;
+    padding: 13px 16px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    color: white;
+    width: 100%;
+    margin-bottom: 10px;
+    transition: opacity 0.2s, transform 0.1s;
+}
+button:active { opacity: 0.8; transform: scale(0.98); }
+
+.btn-primary { background: linear-gradient(135deg, #00cc05, #007a03); }
+.btn-secondary { background: #444; }
+.btn-ghost {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.25);
+    color: #ccc;
+    font-size: 13px;
+    padding: 10px;
+}
+
+.divider {
+    height: 1px;
+    background: rgba(255,255,255,0.1);
+    margin: 16px 0;
+}
+
+.link {
+    color: #00ff08;
+    cursor: pointer;
+    font-weight: bold;
+    text-decoration: none;
+}
+.link:hover { text-decoration: underline; }
+
+.mensagem {
+    font-size: 13px;
+    min-height: 18px;
+    margin-bottom: 10px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    display: none;
+}
+.mensagem.erro { background: rgba(255,50,50,0.15); color: #ff6b6b; display: block; }
+.mensagem.ok   { background: rgba(0,200,50,0.15);  color: #00ff08;  display: block; }
+
+.suporte {
+    margin-top: 18px;
+    font-size: 12px;
+    color: #666;
+}
+.suporte a { color: #666; text-decoration: none; }
+.suporte a:hover { color: #aaa; }
+
+/* Painel oculto */
+.painel { display: none; }
+.painel.ativo { display: block; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <img src="Sem nome (480 x 322 px).png" alt="Logo">
+
+    <!-- PAINEL LOGIN -->
+    <div id="painelLogin" class="painel ativo">
+        <h2>Entrar</h2>
+        <div id="msgLogin" class="mensagem"></div>
+        <input type="email" id="emailLogin" placeholder="E-mail" autocomplete="email">
+        <input type="password" id="senhaLogin" placeholder="Senha" autocomplete="current-password">
+        <button class="btn-primary" id="btnEntrar">Entrar</button>
+        <button class="btn-ghost" id="btnEsqueciSenha">Esqueci minha senha</button>
+        <div class="divider"></div>
+        <p style="font-size:14px; color:#aaa;">
+            Não tem conta? <a class="link" id="linkCadastro">Cadastre-se</a>
+        </p>
+    </div>
+
+    <!-- PAINEL CADASTRO -->
+    <div id="painelCadastro" class="painel">
+        <h2>Criar Conta</h2>
+        <div id="msgCadastro" class="mensagem"></div>
+        <input type="text" id="cadastroNome" placeholder="Nome de usuário" autocomplete="username">
+        <input type="email" id="cadastroEmail" placeholder="E-mail" autocomplete="email">
+        <input type="password" id="cadastroSenha" placeholder="Senha (mín. 6 caracteres)" autocomplete="new-password">
+        <button class="btn-primary" id="btnCriarConta">Criar Conta</button>
+        <div class="divider"></div>
+        <p style="font-size:14px; color:#aaa;">
+            Já tem conta? <a class="link" id="linkLogin">Entrar</a>
+        </p>
+    </div>
+
+    <div class="suporte">
+        <a href="mailto:bohmdemoura@gmail.com">✉️ bohmdemoura@gmail.com</a>
+    </div>
+    <!-- VERSION_FOOTER_START -->
+<div style="text-align:center; padding:14px 0 4px; font-size:11px; color:#999; letter-spacing:0.04em; user-select:none;">
+    Figurinhas Bohm &nbsp;•&nbsp; v1.0.2 &nbsp;•&nbsp; 02/05/2026, 19:52
+</div>
+<!-- VERSION_FOOTER_END -->
+
+</div>
+
+<script type="module">
+import { auth } from "./firebase-config.js";
+import {
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    updateProfile,
+    sendPasswordResetEmail,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+// Se já logado, vai direto para o álbum
+onAuthStateChanged(auth, (user) => {
+    if (user) window.location.href = 'index.html';
+});
+
+function mostrarMsg(id, texto, tipo) {
+    const el = document.getElementById(id);
+    el.textContent = texto;
+    el.className = 'mensagem ' + tipo;
+}
+
+// Alternar painéis
+document.getElementById('linkCadastro').addEventListener('click', () => {
+    document.getElementById('painelLogin').classList.remove('ativo');
+    document.getElementById('painelCadastro').classList.add('ativo');
+    document.getElementById('msgCadastro').className = 'mensagem';
+});
+
+document.getElementById('linkLogin').addEventListener('click', () => {
+    document.getElementById('painelCadastro').classList.remove('ativo');
+    document.getElementById('painelLogin').classList.add('ativo');
+    document.getElementById('msgLogin').className = 'mensagem';
+});
+
+// Login
+document.getElementById('btnEntrar').addEventListener('click', async () => {
+    const email = document.getElementById('emailLogin').value.trim();
+    const senha = document.getElementById('senhaLogin').value;
+    if (!email || !senha) return mostrarMsg('msgLogin', 'Preencha e-mail e senha.', 'erro');
+    try {
+        await signInWithEmailAndPassword(auth, email, senha);
+        // onAuthStateChanged redireciona automaticamente
+    } catch (e) {
+        const msgs = {
+            'auth/invalid-credential': 'E-mail ou senha incorretos.',
+            'auth/user-not-found': 'Usuário não encontrado.',
+            'auth/wrong-password': 'Senha incorreta.',
+            'auth/too-many-requests': 'Muitas tentativas. Tente mais tarde.',
+        };
+        mostrarMsg('msgLogin', msgs[e.code] || 'Erro: ' + e.message, 'erro');
+    }
+});
+
+// Enter no login
+document.getElementById('senhaLogin').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') document.getElementById('btnEntrar').click();
+});
+
+// Esqueci a senha
+document.getElementById('btnEsqueciSenha').addEventListener('click', async () => {
+    const email = document.getElementById('emailLogin').value.trim();
+    if (!email) return mostrarMsg('msgLogin', 'Digite seu e-mail primeiro.', 'erro');
+    try {
+        await sendPasswordResetEmail(auth, email);
+        mostrarMsg('msgLogin', 'E-mail de redefinição enviado!', 'ok');
+    } catch (e) {
+        mostrarMsg('msgLogin', 'Erro ao enviar e-mail: ' + e.message, 'erro');
+    }
+});
+
+// Cadastro
+document.getElementById('btnCriarConta').addEventListener('click', async () => {
+    const nome  = document.getElementById('cadastroNome').value.trim();
+    const email = document.getElementById('cadastroEmail').value.trim();
+    const senha = document.getElementById('cadastroSenha').value;
+
+    if (!nome || !email || !senha) return mostrarMsg('msgCadastro', 'Preencha todos os campos.', 'erro');
+    if (senha.length < 6) return mostrarMsg('msgCadastro', 'A senha deve ter pelo menos 6 caracteres.', 'erro');
+
+    try {
+        const cred = await createUserWithEmailAndPassword(auth, email, senha);
+        await updateProfile(cred.user, { displayName: nome });
+        // onAuthStateChanged redireciona automaticamente
+    } catch (e) {
+        const msgs = {
+            'auth/email-already-in-use': 'Este e-mail já está em uso.',
+            'auth/invalid-email': 'E-mail inválido.',
+            'auth/weak-password': 'Senha muito fraca.',
+        };
+        mostrarMsg('msgCadastro', msgs[e.code] || 'Erro: ' + e.message, 'erro');
+    }
+});
+
+// Enter no cadastro
+document.getElementById('cadastroSenha').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') document.getElementById('btnCriarConta').click();
+});
+</script>
+
+
+</body>
+</html>
