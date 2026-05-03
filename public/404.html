@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 — Figurinhas Bohm</title>
+    <link rel="icon" type="image/png" href="Sem nome (480 x 322 px).png">
+    <meta name="theme-color" content="#8A1538">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background: radial-gradient(circle at top, #4a0e1c 0%, #1a1a1a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px 32px 32px;
+            width: 100%;
+            max-width: 420px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Número 404 animado */
+        .numero-404 {
+            font-size: 96px;
+            font-weight: 900;
+            letter-spacing: -4px;
+            background: linear-gradient(135deg, #ffbf00, #ff8000);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 4px;
+            animation: pulse404 2.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse404 {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.85; transform: scale(1.03); }
+        }
+
+        /* Figurinha "faltante" estilizada */
+        .cromo-404 {
+            width: 72px;
+            height: 72px;
+            background: #333;
+            border: 2px dashed #555;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 28px;
+            color: #555;
+            position: relative;
+            animation: shake 3s ease-in-out infinite;
+        }
+
+        @keyframes shake {
+            0%, 90%, 100% { transform: rotate(0deg); }
+            92% { transform: rotate(-4deg); }
+            94% { transform: rotate(4deg); }
+            96% { transform: rotate(-3deg); }
+            98% { transform: rotate(3deg); }
+        }
+
+        .cromo-404::after {
+            content: '?';
+            font-size: 36px;
+            font-weight: 900;
+            color: #555;
+        }
+
+        /* Título */
+        h1 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+
+        /* Frase engraçada */
+        .frase {
+            font-size: 15px;
+            color: #aaa;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .destaque {
+            color: #ffbf00;
+            font-weight: bold;
+        }
+
+        /* Badge tipo "figurinha faltante" */
+        .badge-faltante {
+            display: inline-block;
+            background: #333;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 6px 16px;
+            font-size: 13px;
+            color: #666;
+            margin: 16px 0 24px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.08);
+            margin: 20px 0;
+        }
+
+        /* Botões */
+        .btn-voltar {
+            display: inline-block;
+            background: linear-gradient(135deg, #00cc05, #007a03);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 14px 28px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            width: 100%;
+            transition: opacity 0.2s, transform 0.1s;
+            margin-bottom: 10px;
+        }
+        .btn-voltar:active { opacity: 0.8; transform: scale(0.98); }
+
+        .btn-login {
+            display: inline-block;
+            background: transparent;
+            color: #aaa;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 10px;
+            padding: 12px 28px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            width: 100%;
+            transition: opacity 0.2s, background 0.2s;
+        }
+        .btn-login:hover { background: rgba(255,255,255,0.05); }
+
+        .suporte {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #555;
+        }
+        .suporte a { color: #555; text-decoration: none; }
+        .suporte a:hover { color: #aaa; }
+
+        /* Versão footer */
+        .footer {
+            text-align: center;
+            padding: 14px 0 4px;
+            font-size: 11px;
+            color: #444;
+            letter-spacing: 0.04em;
+            user-select: none;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<div>
+    <div class="card">
+        <div class="cromo-404"></div>
+
+        <div class="numero-404">404</div>
+
+        <h1>Figurinha não encontrada</h1>
+
+        <p class="frase">
+            Você foi longe demais no álbum e acabou chegando numa página que nem o Panini imprimiu.
+        </p>
+
+        <div class="badge-faltante">📦 &nbsp;PÁGINA &nbsp;·&nbsp; FALTANTE</div>
+
+        <p class="frase" style="font-size: 13px;">
+            Essa URL está mais <span class="destaque">faltante</span> que a figurinha
+            <span class="destaque">BRA 7</span> no seu álbum.
+        </p>
+
+        <div class="divider"></div>
+
+        <a class="btn-voltar" href="index.html">🔙 Voltar para o Álbum</a>
+        <a class="btn-login" href="login.html">🔑 Ir para o Login</a>
+
+        <div class="suporte">
+            <a href="mailto:bohmdemoura@gmail.com">✉️ bohmdemoura@gmail.com</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        Figurinhas Bohm &nbsp;•&nbsp; v1.0.3 &nbsp;•&nbsp; 02/05/2026, 21:05
+    </div>
+</div>
+
+</body>
+</html>
