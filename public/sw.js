@@ -1,4 +1,4 @@
-const CACHE_NAME = 'figurinhas-bohm-v1.0.2';
+const CACHE_NAME = 'figurinhas-bohm-v1.0.3';
 
 const assets = [
     '/',
